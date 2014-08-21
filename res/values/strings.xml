@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">test02</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_edit_url">输入访问地址</string>
+    <string name="menu_radio_url">选择访问地址</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>
