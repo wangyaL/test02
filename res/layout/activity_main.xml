@@ -2,14 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    
+    android:background="@drawable/home_00"
     tools:context=".MainActivity" >
 
     <TextView 
         android:id="@+id/main_text_view1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="25dp"
         android:layout_marginTop="33dp"
         android:text="用户名："
         />
@@ -53,8 +53,7 @@
 
     <Button
         android:id="@+id/btn_login"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+        android:layout_width="120dip"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView1"
         android:layout_centerHorizontal="true"
@@ -63,8 +62,7 @@
 
     <Button
         android:id="@+id/to_menu_home"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+        android:layout_width="120dip"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_login"
         android:layout_centerHorizontal="true"
