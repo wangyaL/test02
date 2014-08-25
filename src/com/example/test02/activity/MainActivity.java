@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -44,7 +45,7 @@ import com.google.gson.Gson;
 public class MainActivity extends Activity {
 	private String username,password;
 	private EditText EditUsername,EditPassword;
-	private Button login_btn;
+	private Button login_btn,to_menu_home;
 	/**
 	 * 用户登录地址
 	 */
@@ -60,8 +61,10 @@ public class MainActivity extends Activity {
 		EditUsername = (EditText) findViewById(R.id.editText_username);
 		EditPassword = (EditText) findViewById(R.id.editText_password);
 		login_btn = (Button) findViewById(R.id.btn_login);
+		to_menu_home = (Button) findViewById(R.id.to_menu_home);
 		
 		login_btn.setOnClickListener(loginListenner);
+		to_menu_home.setOnClickListener(toMuneListenner);
 	}
 
 	@Override
@@ -70,7 +73,9 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
+	/**
+	 * 点击登录按钮监听
+	 */
 	private OnClickListener loginListenner = new OnClickListener() {
 		
 		@Override
@@ -84,6 +89,15 @@ public class MainActivity extends Activity {
 				userLogin(MainActivity.this, username, password);
 			}
 //			getGoods(MainActivity.this, 7);
+		}
+	};
+	/**
+	 * 点击跳转按钮监听，跳致底部菜单页
+	 */
+	private OnClickListener toMuneListenner = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			startActivity(new Intent(MainActivity.this, HomeMenuActivity.class));
 		}
 	};
 	@SuppressWarnings("unused")
@@ -167,6 +181,7 @@ public class MainActivity extends Activity {
 					System.out.println("===username==>>"+user.getName());
 				}
 				Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+				startActivity(new Intent(MainActivity.this, HomeMenuActivity.class));
 //				Looper.loop();
 			}else {
 				Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_SHORT).show();

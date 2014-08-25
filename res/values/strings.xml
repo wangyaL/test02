@@ -6,5 +6,10 @@
     <string name="menu_edit_url">输入访问地址</string>
     <string name="menu_radio_url">选择访问地址</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_home_menu">首页</string>
+    <string name="title_activity_add_exam">添加考试</string>
+    <string name="title_activity_my_exam">我的考试</string>
+    <string name="title_activity_message">我的通知</string>
+    <string name="title_activity_settings">设置</string>
 
 </resources>

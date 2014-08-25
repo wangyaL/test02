@@ -23,7 +23,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.example.test02.activity.HomeMenuActivity"
+            android:label="@string/title_activity_home_menu" >
+        </activity>
+        <activity
+            android:name="com.example.test02.activity.AddExamActivity"
+            android:label="@string/title_activity_add_exam" >
+        </activity>
+        <activity
+            android:name="com.example.test02.activity.MyExamActivity"
+            android:label="@string/title_activity_my_exam" >
+        </activity>
+        <activity
+            android:name="com.example.test02.activity.MessageActivity"
+            android:label="@string/title_activity_message" >
+        </activity>
+        <activity 			android:name="com.example.test02.activity.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
     </application>
     <!-- 授权访问网络 -->
-	<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>
