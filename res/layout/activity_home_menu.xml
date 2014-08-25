@@ -41,19 +41,19 @@
             android:layout_height="wrap_content" >  
   
             <RadioGroup  
-                android:id="@+id/main_tab_group"  
-                android:layout_width="fill_parent"  
-                android:layout_height="wrap_content"  
-                android:layout_gravity="bottom"  
-                android:gravity="bottom"  
-                android:orientation="horizontal"  
+                android:id="@+id/main_tab_group"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="bottom"
+                android:orientation="horizontal"
                  >  
   
                 <RadioButton  
                     android:id="@+id/main_tab_addExam"  
                     style="@style/MMTabButton"  
                     android:layout_weight="1.0"      
-                    android:drawableTop="@drawable/url_icon"  
+                    android:drawableTop="@drawable/url_icon"
                     android:text="添加考试" />  
   
                 <RadioButton  

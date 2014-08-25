@@ -26,13 +26,17 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -43,9 +47,12 @@ import com.example.test02.core.bean.User;
 import com.google.gson.Gson;
 
 public class MainActivity extends Activity {
+	private MyCount myCount;
 	private String username,password;
 	private EditText EditUsername,EditPassword;
 	private Button login_btn,to_menu_home;
+	private CheckBox rem_pw, auto_login;
+	private SharedPreferences sp;
 	/**
 	 * 用户登录地址
 	 */
@@ -58,13 +65,38 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		myCount = (MyCount) getApplication();
+		
 		EditUsername = (EditText) findViewById(R.id.editText_username);
 		EditPassword = (EditText) findViewById(R.id.editText_password);
 		login_btn = (Button) findViewById(R.id.btn_login);
 		to_menu_home = (Button) findViewById(R.id.to_menu_home);
 		
+		sp = this.getSharedPreferences("userInfo", Context.MODE_WORLD_READABLE);
+		rem_pw = (CheckBox) findViewById(R.id.cb_mima);
+		auto_login = (CheckBox) findViewById(R.id.cb_auto);
+		
+		//判断记住密码多选框的状态
+		if(sp.getBoolean("ISCHECK", false)){
+			//设置默认是记录密码状态
+			rem_pw.setChecked(true);
+			EditUsername.setText(sp.getString("USER_NAME", ""));
+			EditPassword.setText(sp.getString("PASSWORD", ""));
+			//判断自动登录多选框状态
+			if(sp.getBoolean("AUTO_ISCHECK", false)){
+				//设置默认是自动登录状态
+				auto_login.setChecked(true);
+				//跳转界面
+				Intent intent = new Intent(MainActivity.this, LogoActivity.class);
+				MainActivity.this.startActivity(intent);
+			}
+		}
+		
 		login_btn.setOnClickListener(loginListenner);
 		to_menu_home.setOnClickListener(toMuneListenner);
+		
+		rem_pw.setOnClickListener(remember);
+		auto_login.setOnClickListener(autoLogin);
 	}
 
 	@Override
@@ -98,6 +130,36 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			startActivity(new Intent(MainActivity.this, HomeMenuActivity.class));
+		}
+	};
+	/**
+	 * 监听记住密码
+	 */
+	private OnClickListener remember = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if(rem_pw.isChecked()){
+				System.out.println("记住密码已选中");
+				sp.edit().putBoolean("ISCHECK", true).commit();
+			}else {
+				System.out.println("记住密码没有选中");
+				sp.edit().putBoolean("ISCHECK", false).commit();
+			}
+		}
+	};
+	/**
+	 * 监听自动登录
+	 */
+	private OnClickListener autoLogin = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if(auto_login.isChecked()){
+				System.out.println("自动登录已选中");
+				sp.edit().putBoolean("AUTO_ISCHECK", true).commit();
+			}else {
+				System.out.println("自动登录没有选中");
+				sp.edit().putBoolean("AUTO_ISCHECK", false).commit();
+			}
 		}
 	};
 	@SuppressWarnings("unused")
@@ -145,55 +207,70 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	private void userLogin(Context context, String username, String password){
-		MyCount myCount = (MyCount) getApplication();
+	private void userLogin(Context context, final String username, final String password){
 		System.out.println("请求的路径是=====>>"+myCount.getURL());
-		try {
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpPost post = new HttpPost(myCount.getURL()+LOGIN_URL);
-			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-			parameters.add(new BasicNameValuePair("username", username));
-			parameters.add(new BasicNameValuePair("password", password));
-//			post.setEntity(new UrlEncodedFormEntity(parameters, HTTP.UTF_8));
-			
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("username", username);
-			map.put("password", password);
-			HttpEntity entity = new StringEntity(getJsonByMap(map, null));
-			post.setEntity(entity);
-			HttpResponse response = httpClient.execute(post);
-			if(response.getStatusLine().getStatusCode() == 200){
-				String msg = EntityUtils.toString(response.getEntity());
-				System.out.println(msg);
-//				Looper.prepare();
-				UserLoginResult loginResult = new UserLoginResult();
-				Gson gson = new Gson();
-				loginResult = gson.fromJson(msg.toString(), UserLoginResult.class);
-				System.out.println("===flag==>>"+loginResult.getFlag());
-				System.out.println("===message==>>"+loginResult.getMessage());
-				System.out.println("===isSuccess==>>"+loginResult.getIsSuccess());
-				System.out.println("===info==>>"+loginResult.getInfo());
-				System.out.println("===userVo==>>"+loginResult.getUserVO());
-				User user = loginResult.getUserVO();
-	//			UserInfo user2 = gson.fromJson(msg.get, UserInfo.class);
-				if(user != null){
-					System.out.println("===userid==>>"+user.getId());
-					System.out.println("===username==>>"+user.getName());
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Looper.prepare();
+				try {
+					HttpClient httpClient = new DefaultHttpClient();
+					HttpPost post = new HttpPost(myCount.getURL()+LOGIN_URL);
+					List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+					parameters.add(new BasicNameValuePair("username", username));
+					parameters.add(new BasicNameValuePair("password", password));
+//					post.setEntity(new UrlEncodedFormEntity(parameters, HTTP.UTF_8));
+					
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("username", username);
+					map.put("password", password);
+					HttpEntity entity = new StringEntity(getJsonByMap(map, null));
+					post.setEntity(entity);
+					HttpResponse response = httpClient.execute(post);
+					if(response.getStatusLine().getStatusCode() == 200){
+						String msg = EntityUtils.toString(response.getEntity());
+						System.out.println(msg);
+						UserLoginResult loginResult = new UserLoginResult();
+						Gson gson = new Gson();
+						loginResult = gson.fromJson(msg.toString(), UserLoginResult.class);
+						System.out.println("===flag==>>"+loginResult.getFlag());
+						System.out.println("===message==>>"+loginResult.getMessage());
+						System.out.println("===isSuccess==>>"+loginResult.getIsSuccess());
+						System.out.println("===info==>>"+loginResult.getInfo());
+						System.out.println("===userVo==>>"+loginResult.getUserVO());
+						User user = loginResult.getUserVO();
+			//			UserInfo user2 = gson.fromJson(msg.get, UserInfo.class);
+						if(user != null){
+							System.out.println("===userid==>>"+user.getId());
+							System.out.println("===username==>>"+user.getName());
+							Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+							//登录成功和记住密码框为选中状态才保存用户信息
+							if(rem_pw.isChecked()){
+								//记住用户名、密码
+								Editor editor = sp.edit();
+								editor.putString("USER_NAME", username);
+								editor.putString("PASSWORD", password);
+								editor.commit();
+							}
+							
+							MainActivity.this.startActivity(new Intent(MainActivity.this, LogoActivity.class));
+						}else {
+							Toast.makeText(MainActivity.this, "用户名或密码错误，请重新登录", Toast.LENGTH_SHORT).show();
+						}
+//						Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+					}else {
+						Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-				startActivity(new Intent(MainActivity.this, HomeMenuActivity.class));
-//				Looper.loop();
-			}else {
-				Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
+				Looper.loop();
 			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-			
+		}).start();
 	}
 	/**
 	 * post方式时，将传入参数转换为json格式

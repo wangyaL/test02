@@ -60,5 +60,14 @@
         android:layout_marginTop="150dp"
         android:text="@string/title_activity_settings" />
 
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView5"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:ems="10" />
+
 </RelativeLayout>
 </ScrollView>

@@ -42,6 +42,9 @@
         <activity 			android:name="com.example.test02.activity.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity 			android:name="com.example.test02.activity.LogoActivity"
+            android:label="加载页" >
+        </activity>
     </application>
     <!-- 授权访问网络 -->
     <uses-permission android:name="android.permission.INTERNET" />
